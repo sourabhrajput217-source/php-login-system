@@ -1,42 +1,28 @@
 <?php
-$showalert = false;
-$showerror = false;
+session_start();
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-    include 'partial/userdb.php';
-
-    $email     = trim($_POST['email']);
-    $password  = trim($_POST['password']);
-    $cpassword = trim($_POST['cpassword']);
-
-    // check email exists
-    $exitsql = "SELECT * FROM user WHERE email='$email'";
-    $result  = mysqli_query($connection, $exitsql);
-    $num     = mysqli_num_rows($result);
-
-    if ($num > 0) {
-
-        // ✅ ERROR
-        $showerror = "Email already exists";
-
-    } else {
-
-        if ($password === $cpassword) {
-          $hash= password_hash ($password, PASSWORD_DEFAULT);
-
-            $sql = "INSERT INTO user (email, password, `date-time`)
-                    VALUES ('$email', '$hash', current_timestamp())";
-
-            if (mysqli_query($connection, $sql)) {
-                $showalert = true; // SUCCESS
-            }
-
-        } else {
-            $showerror = "Password do not match";
-        }
-    }
+if(!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] != true){
+    header("location: log-in.php");
+    exit;
 }
 ?>
 
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Welcome</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
 
+<?php require 'partial/navbar.php'; ?>
+
+<div class="container mt-5">
+    <h1>Welcome <?php echo $_SESSION['email']; ?> 🎉</h1>
+    <p>You are successfully logged in.</p>
+</div>
+
+</body>
+</html>
