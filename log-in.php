@@ -1,5 +1,5 @@
 <?php
-session_start();
+session_start();   //  VERY IMPORTANT
 
 $loginalert = false;
 $showerror  = false;
@@ -14,18 +14,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $sql = "SELECT * FROM user WHERE email = '$email'";
     $result = mysqli_query($connection, $sql);
 
-    if (mysqli_num_rows($result) == 1) {
+    if ($result && mysqli_num_rows($result) == 1) {
 
         $row = mysqli_fetch_assoc($result);
 
         if (password_verify($password, $row['password'])) {
 
-            $loginalert = true;
-
             $_SESSION['loggedin'] = true;
             $_SESSION['email']   = $email;
-            header("location: welcome.php");
-            exit;
+
+            //  Direct redirect
+            header("Location: welcome.php");
+            exit();
 
         } else {
             $showerror = "Invalid password";
